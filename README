@@ -1,0 +1,16 @@
+This is your new Play application
+=====================================
+
+This file will be packaged with your application, when using `play dist`.
+
+
+Passos: 
+
+Incluir a Lib 
+libraryDependencies ++= Seq(
+  "org.apache.commons" % "commons-email" % "1.3.1"
+)  
+
+Permitir o acesso de aplicativos menos seguros
+https://www.google.com/settings/security/lesssecureapps
+
