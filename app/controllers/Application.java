@@ -1,5 +1,18 @@
 package controllers;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
+import models.Usuario;
+
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
@@ -36,11 +49,22 @@ public class Application extends Controller {
 		email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
 		MailerPlugin.send(email);*/
 		
-		   // Load SMTP configuration
+		// Load SMTP configuration
         String smtpHost = Play.application().configuration().getString( "smtp.host" );
         Integer smtpPort = Play.application().configuration().getInt( "smtp.port" );
         String smtpUser = Play.application().configuration().getString( "smtp.user" );
         String smtpPassword = Play.application().configuration().getString( "smtp.password");
+        
+        //Add emails em CC
+        Collection<InternetAddress> emails = new ArrayList<InternetAddress>();
+        InternetAddress intAdd = null;
+		try {
+			intAdd = new InternetAddress("sandro.adsc@gmail.com");
+		} catch (AddressException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        emails.add(intAdd);
 
         Email email = new SimpleEmail();
 		try {
@@ -48,6 +72,7 @@ public class Application extends Controller {
 			email.setSmtpPort(smtpPort);
 			email.setAuthenticator(new DefaultAuthenticator(smtpUser, smtpPassword));
 			email.setSSLOnConnect(true);
+			email.setCc(emails);
 			email.setFrom("sandro.adsc@gmail.com");
 			email.setSubject("TestMail");
 			email.addTo("alessandro_anjos@yahoo.com.br");
@@ -64,6 +89,49 @@ public class Application extends Controller {
 		}
 		
 		return ok(result);
+	}
+
+	public static Result addUsuario() {
+		Usuario sm = new Usuario();
+		sm.isAdministrador = true;
+		sm.nome = "João";
+		sm.email = "team@admin.com.br";
+		sm.last_ip = obterIp();
+		sm.nacionalidade = "Brésilien";
+		sm.pais = "Brésil";
+		sm.idade = "19";
+		Usuario.create(sm);
+		return ok("Record is added");
+	}
+	
+	public static String obterIp(){
+		InetAddress ia;
+		String ip = null;
+		String nome = null;
+		Enumeration nis = null;
+        try {
+            nis = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        while (nis.hasMoreElements()) {
+            NetworkInterface ni = (NetworkInterface) nis.nextElement();
+            Enumeration ias = ni.getInetAddresses();
+            while (ias.hasMoreElements()) {
+                ia = (InetAddress) ias.nextElement();
+                if (!ia.getHostAddress().contains(":") && !(ia.getHostAddress().length()<9)) {//Nesse if está a charada, sendo que eu sei que meu ip começa com 10.132, por exemplo
+                	ip=ia.getHostAddress();    
+                }
+                System.out.println("Teste " + ia.getHostAddress());
+                if (!ni.getName().equals("lo")) {
+                    System.out.println("test = "+ia.getHostAddress());
+                }
+            }
+        }
+        System.out.println("Nome: " + nome);
+        System.out.println("IP: " + ip);
+        
+        return ip;
 	}
 
 }
