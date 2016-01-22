@@ -102,6 +102,7 @@ public class Application extends Controller {
 		sm.idade = "19";
 		Usuario.create(sm);
 		return ok("Record is added");
+		
 	}
 	
 	public static String obterIp(){

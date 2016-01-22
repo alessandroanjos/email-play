@@ -34,6 +34,8 @@ public class Usuario extends Model{
 	
 	public static void create(Usuario user){
         user.save();
+        //test to ocurred error 500
+        //user.find.findUnique();
    }
 	
 	public static Finder<Long, Usuario> find = new Finder<Long, Usuario>(Long.class, Usuario.class);

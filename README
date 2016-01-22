@@ -54,3 +54,8 @@ How to handle Play Framework 2 database evolutions in production
  
 
 
+======================================
+How to Use Global.java - GlobalSettings in Play Framework
+
+*Descomente o  application.global=Global in applicatin.conf
+* Crie a classe Global.java noo root do projeto.
